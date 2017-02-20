@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task 05</title>
+</head>
+<body>
+  <form action="" method="POST">
+    <div class="username">
+      <label for="t1">姓名：</label><input id="t1" type="text" name="username" placeholder="用户名" />
+    </div>
+    <div class="password">
+      <label for="t2">密码：</label><input id="t2" type="password" name="password" />
+    </div>
+    <div class="gender">
+      <label>性别：</label><label><input type="radio" name="gender" value="m" checked />男</label><label><input type="radio" name="gender" value="f" />女</label>
+    </div>
+    <div class="sex_orientation">
+      <label>取向：</label><label><input type="radio" name="sex_orientation" value="m" />男</label><label><input type="radio" name="sex_orientation" value="f" checked />女</label>
+    </div>
+    <div class="hobby">
+      <label>爱好：</label><label><input type="checkbox" name="hobby" value="dota" />dota</label><label><input type="checkbox" name="hobby" value="travel" checked />旅游</label><label><input type="checkbox" name="hobby" value="pet" checked />宠物</label>
+    </div>
+    <div class="comment">
+      <label>评论：</label><textarea rows="10" cols="50" placeholder="ddd" name="comment"></textarea>
+    </div>
+    <div class="car">
+      <label>我的car：</label>
+      <select name="car">
+        <option value="sabo">萨博</option>
+        <option value="lambo">兰博</option>
+        <option value="farari">法拉利</option>
+      </select>
+      <input type="submit" value="提交" />
+    </div>
+  </form>
+</body>
+</html>
