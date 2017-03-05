@@ -79,9 +79,9 @@
       currentIndex = index;
     }
     for (var i = 0; i < tabs.length; i++) {
-      tabs[i]['tabIndex'] = i;
       tabs[i].addEventListener('click', function() {
-        showPanel(this['tabIndex']);
+        var index = [].indexOf.call(tabs, this);
+        showPanel(index);
       }, false);
     }
 
