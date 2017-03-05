@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Modal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .container {
+      position: relative;
+      width: 600px;
+      margin: 0 auto;
+    }
+    
+    .modal-shadow {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, .3);
+    }
+    .modal-shadow.active {
+      display: block;
+    }
+    
+    .modal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 999;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      background-color: white;
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    
+    .m-header {
+      position: relative;
+      padding: 10px 15px;
+      background-color: #009688;
+      color: white;
+    }
+    
+    .m-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+    
+    .m-body {
+      padding: 20px 15px;
+    }
+    
+    .m-text {
+      line-height: 2;
+    }
+    
+    .m-footer {
+      padding: 10px 15px;
+      background-color: #009688;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <button class="btn-show">显示模态框</button>
+    <div class="modal-shadow">
+      <div class="modal">
+        <header class="m-header">
+          <h3>头部</h3>
+          <div class="m-close">X</div>
+        </header>
+        <div class="m-body">
+          <p class="m-text">这是内容</p>
+          <p class="m-text">这是内容</p>
+        </div>
+        <footer class="m-footer">
+          <p>尾部</p>
+        </footer>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    var modal = document.querySelector('.modal');
+    var modalShadow = document.querySelector('.modal-shadow');
+    var modalCloser = document.querySelector('.m-close');
+    var btn = document.querySelector('.btn-show');
+    var closeHandler = function(e) {
+      e.stopPropagation();
+      modalShadow.classList.remove('active');
+    }
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      modalShadow.classList.add('active');
+    }, false);
+    modal.addEventListener('click', function(e) {
+      e.stopPropagation();
+    }, false);
+    modalCloser.addEventListener('click', closeHandler, false);
+    modalShadow.addEventListener('click', closeHandler, false);
+
+  </script>
+</body>
+
+</html>
