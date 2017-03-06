@@ -82,6 +82,7 @@
       tabs[i].addEventListener('click', function() {
         var index = [].indexOf.call(tabs, this);
         showPanel(index);
+        currentIndex = index;
       }, false);
     }
 
