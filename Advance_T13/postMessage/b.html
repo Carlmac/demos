@@ -1,0 +1,19 @@
+<html>
+<style>
+	html,body{
+		margin: 0;
+	}
+	input{
+		margin: 20px;
+		width: 200px;
+	}
+</style>
+
+	<input id="input" type="text"  placeholder="">
+<script>
+ 
+window.addEventListener('message', function(e){
+	document.querySelector('#input').value = e.data;
+});
+</script>
+</html>

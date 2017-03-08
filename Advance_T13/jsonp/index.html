@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>news</title>
+	<style>
+		.container {
+			width: 900px;
+			margin: 0 auto;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<button class="change">点我跨域</button>
+	</div>
+
+	<script>
+		var btn = document.querySelector('.change');
+		var ul = document.querySelector('.news');
+
+		btn.addEventListener('click', function () {
+			var script = document.createElement('script');
+			script.src = 'http://b.example.com:8080/getMsg?callback=showMessage';
+			document.head.appendChild(script);
+			document.head.removeChild(script);
+		});
+
+		function showMessage(msg) {
+			alert(msg);
+		}
+	</script>
+
+</html>
