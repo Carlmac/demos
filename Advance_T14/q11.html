@@ -192,8 +192,12 @@
       price: '￥45.00'
     }];
 
-    $('.prod-ct').on('mouseenter mouseleave', '.prod', function () {
-      $(this).toggleClass('hover');
+    $('.prod-ct').on('mouseenter mouseleave', '.prod', function (e) {
+      if (e.type === 'mouseenter') {
+        $(this).addClass('hover');
+      } else if (e.type === 'mouseleave') {
+        $(this).removeClass('hover');
+      }
     });
 
     var $btn = $('.btn.btn-add');
