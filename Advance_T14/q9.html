@@ -148,8 +148,12 @@
   </div>
   <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
   <script>
-    $('.category').on('mouseenter mouseleave', function() {
-      $(this).toggleClass('hover');
+    $('.category').on('mouseenter mouseleave', function(e) {
+      if (e.type === 'mouseenter') {
+        $(this).addClass('hover');
+      } else if (e.type === 'mouseleave') {
+        $(this).removeClass('hover');
+      }      
     });
   </script>
 </body>
