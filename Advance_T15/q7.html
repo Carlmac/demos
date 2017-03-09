@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    div {
+      margin-bottom: 50px;
+    }
+    
+    input {
+      outline: none;
+    }
+
+    .enlengthen {
+      width: 1px;
+      height: 2000px;
+    }
+    
+    .scroll-top {
+      position: fixed;
+      top: 0; left: 50%;
+      width: 200px;
+      margin-left: -100px;
+    }
+    .hover {
+      width: 100px;
+      height: 100px;
+      border: 1px solid black;
+      background-color: white;
+    }
+    .hover.active {
+      background-color: red;
+    }
+    .input input.active {
+      border-color: blue;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="btn">
+    <button>点我</button>
+  </div>
+  <div class="scroll-top">
+    窗口距离顶部有0像素
+  </div>
+  <div class="hover"></div>
+  <div class="input">
+    <input type="text" value="">
+  </div>
+  <div class="select">
+    <p>如果只能拥有一个，你：<span></span></p>
+    <select>
+      <option value="" selected></option>
+      <option value="跑车">跑车</option>
+      <option value="美女">美女</option>
+      <option value="钱">钱</option>
+    </select>
+  </div>
+  <div class="enlengthen"></div>
+  <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+  <script>
+    var $btn = $('.btn button');
+    $btn.click(function (e) {
+      e.preventDefault();
+      var $this = $(this);
+      $this.css({
+        'background-color': 'red'
+      });
+      setTimeout(function() {
+        $this.css({
+          'background-color': 'blue'
+        });
+      }, 500);
+    });
+
+    var $window = $(window);
+    $window.scroll(function() {
+      var text = '窗口距离顶部有' + $window.scrollTop() + '像素';
+      $('.scroll-top').text(text);
+    });
+
+    var $hover = $('.hover');
+    $hover.on('mouseenter mouseleave', function(e) {
+      if (e.type === 'mouseenter') {
+        $(this).addClass('active');
+      } else if (e.type === 'mouseleave') {
+        $(this).removeClass('active');
+      }
+    });
+
+    var $input = $('.input input');
+    $input.on('focus blur keyup', function(e) {
+      if (e.type === 'focus') {
+        $(this).addClass('active');
+      } else if (e.type === 'blur') {
+        $(this).removeClass('active');
+        console.log($(this).val());
+      } else if (e.type === 'keyup') {
+        var text = $(this).val().toUpperCase();
+        $(this).val(text);
+      }
+    });
+
+    $('.select select').on('change', function(e) {
+      var text = '';
+      text = $(this).find(':selected').text();
+      switch (text) {
+        case '跑车':
+          text = '虚荣！';
+          break;
+        case '美女':
+          text = '好色！';
+          break;
+        case '钱':
+          text = '贪婪！';
+          break;
+      }
+      $('.select span').text(text);
+    });
+  </script>
+</body>
+
+</html>
