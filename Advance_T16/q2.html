@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  div {
+    position: absolute;
+    left: 50%; top: 1500px;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1500px;
+    border: 1px solid black;
+  }
+  </style>
+</head>
+<body>
+
+<div>
+  
+</div>
+
+<script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+<script>
+  
+  var $div = $('div');
+  function isVisible($node) {
+    var nodeOffsetTop = $node.offset().top;
+    var nodeHeight = $node.outerHeight();
+    var windowScrollTop = $(window).scrollTop();
+    var windowHeight = $(window).height();
+    
+    if (nodeOffsetTop - windowHeight < windowScrollTop && windowScrollTop < nodeOffsetTop + nodeHeight) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  $(window).scroll(function() {
+    console.log(isVisible($div));
+  });
+</script>
+</body>
+</html>

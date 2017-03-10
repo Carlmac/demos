@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  div {
+    position: absolute;
+    left: 50%; top: 1500px;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1500px;
+    border: 1px solid black;
+  }
+  </style>
+</head>
+<body>
+
+<div>
+  
+</div>
+
+<script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+<script>
+  
+var shownNodesList = [];                      // 新建数组用于储存已经出现过的元素
+function isShown($node) {                     // 新建函数用于判断是否已经出现过
+  return shownNodesList.indexOf($node) > -1;
+}
+
+var $div = $('div');
+function isVisible($node) {
+  var nodeOffsetTop = $node.offset().top;
+  var nodeHeight = $node.outerHeight();
+  var windowScrollTop = $(window).scrollTop();
+  var windowHeight = $(window).height();
+  
+  if (nodeOffsetTop - windowHeight < windowScrollTop && windowScrollTop < nodeOffsetTop + nodeHeight) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+$(window).scroll(function() {
+  if (isVisible($div) && !isShown($div)) {    // 如果元素可见且没出现过
+    console.log(true);                        // 打印
+    shownNodesList.push($div);                // 放入已出现元素数组中
+  }
+});
+</script>
+</body>
+</html>

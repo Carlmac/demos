@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  .clear-fix {
+    overflow: hidden;
+  }
+  li {
+    list-style: none;
+  }
+  a:link,
+  a:visited,
+  a:hover,
+  a:active {
+    color: inherit;
+  }
+  .news-wrap {
+    width: 600px;
+    margin: 0 auto;
+    padding-top: 10px;
+  }
+  .news {
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #eee;
+  }
+  .news a {
+    display: block;
+  }
+  .news-thumb {
+    float: left;
+    width: 150px;
+    margin-right: 40px;
+    text-align: center;
+  }
+  .news-thumb img {
+    max-width: 100%;
+    vertical-align: middle;
+  }
+  .news-text {
+    float: left;
+    width: 350px;
+  }
+  .news-text h3 {
+    margin-bottom: 20px;
+  }
+  .notice {
+    width: 600px;
+    margin: 0 auto;
+    line-height: 2;
+    text-align: center;
+  }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <ul class="news-wrap">
+
+  </ul>
+  <p class="notice">下滑显示更多</p>
+</div>
+
+<script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+
+  var start = 0;                      // 新闻起始索引位置
+  var isLoading = false;              // 记录是否还在上一次请求中
+  var isNewsEmpty = false;            // 记录是否还有需要加载的新闻
+  var $newsUl = $('.news-wrap');      // 获取新闻容器
+  var $notice = $('.notice');         // 获取提醒文本元素
+
+  function isVisible($node) {
+    var nodeOffsetTop = $node.offset().top;
+    var nodeHeight = $node.outerHeight();
+    var windowScrollTop = $(window).scrollTop();
+    var windowHeight = $(window).height();
+    
+    if (nodeOffsetTop - windowHeight < windowScrollTop && windowScrollTop < nodeOffsetTop + nodeHeight) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function watchNews() {              // 检测是否需要获取更多新闻的函数
+    if (isVisible($notice) && !isLoading && !isNewsEmpty) {    // 当列表最下方的提醒文本进入视野
+      getNews();                                               // 同时没有在请求，并且仍有需要加载的新闻时
+    }                                                          // 调用获取新闻函数
+  }
+
+  function getNews() {       // 向服务器获取新闻的函数，会请求数据并渲染进页面
+    if (!isLoading) {        // 如果没有正在获取，继续
+      isLoading = true;
+      $.get('/news', { start: start }).done(function(res) {
+        if (res.status === 0) {
+          renderNews(res.data);    // 渲染获取的新闻
+          start++;                 // 更新起始索引
+          isLoading = false;
+          watchNews();             // 调用检测新闻函数
+        } else {
+          isLoading = false;
+          alert('获取异常');
+        }
+      }).fail(function() {
+        isLoading = false;
+        alert('出错了');
+      });
+    }
+  }
+
+  function renderNews(newsArr) {                  // 渲染新闻元素的函数
+    if (newsArr.length === 0) {                   // 判断传入的数组中是否有新闻需要渲染
+      isNewsEmpty = true;                         // 更新变量
+      $notice.text('没有更多新闻了');              // 显示结束提醒
+      return;
+    }
+    for (var i = 0; i < newsArr.length; i++) {    // 遍历需要渲染的新闻，生成元素并插入
+      var htmlStr = [
+        '<li class="news"><a class="clear-fix" href="',
+        newsArr[i].link,
+        '"><div class="news-thumb"><img src="',
+        newsArr[i].img,
+        '"></div><div class="news-text"><h3>',
+        newsArr[i].title,
+        '</h3><p>',
+        newsArr[i].brif,
+        '</p></div></a></li>'
+      ].join('');
+      $(htmlStr).appendTo($newsUl);
+    }
+  }
+
+  getNews();              // 初始化获取新闻函数，获得首屏新闻
+
+  $(window).scroll(function() {   // 每次滚动都会调用检测新闻函数
+    watchNews();
+  });
+</script>
+</body>
+</html>

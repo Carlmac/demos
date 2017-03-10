@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  .container {
+    width: 620px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  img {
+    margin-bottom: 20px;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="img/loading.gif" data-src="img/colin.jpg">
+    <img src="img/loading.gif" data-src="img/colin2.jpg">
+    <img src="img/loading.gif" data-src="img/ed.jpg">
+    <img src="img/loading.gif" data-src="img/ed2.jpg">
+    <img src="img/loading.gif" data-src="img/jonny.jpg">
+    <img src="img/loading.gif" data-src="img/jonny2.jpg">
+    <img src="img/loading.gif" data-src="img/philip.jpg">
+    <img src="img/loading.gif" data-src="img/philip2.jpg">
+    <img src="img/loading.gif" data-src="img/thom.jpg">
+    <img src="img/loading.gif" data-src="img/thom2.jpg">
+    <img src="img/loading.gif" data-src="img/amnesiac.jpg">
+    <img src="img/loading.gif" data-src="img/kid_a.jpg">
+    <img src="img/loading.gif" data-src="img/ok_computer.jpg">
+    <img src="img/loading.gif" data-src="img/the_bends.jpg">
+  </div>
+<script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+<script>
+
+var shownNodesList = [];
+function isShown($node) {
+  return shownNodesList.indexOf($node) > -1;
+}
+
+function isVisible($node) {
+  var nodeOffsetTop = $node.offset().top;
+  var nodeHeight = $node.outerHeight();
+  var windowScrollTop = $(window).scrollTop();
+  var windowHeight = $(window).height();
+  
+  if (nodeOffsetTop - windowHeight < windowScrollTop && windowScrollTop < nodeOffsetTop + nodeHeight) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function renderVisibleImgs($imgs) {             // 渲染图片函数
+  $imgs.each(function() {
+    $this = $(this);
+    if (isVisible($this) && !isShown($this)) {
+      var src = $this.data('src');
+      $this.attr('src', src);
+      shownNodesList.push($this);
+    }
+  });
+}
+
+var $imgs = $('img');
+renderVisibleImgs($imgs);                      // 渲染首屏图片
+
+$(window).scroll(function() {
+  renderVisibleImgs($imgs);
+});
+
+</script>
+</body>
+</html>
