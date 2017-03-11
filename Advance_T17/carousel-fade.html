@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Carousel-Fade</title>
+  <style>
+  div,
+  ul,
+  li,
+  a,
+  button,
+  img {
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    list-style: none;
+  }
+  button {
+    outline: 0;
+  }
+
+  .slider {
+    position: relative;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  .slide-viewer {
+    overflow: hidden;
+    height: 300px;
+  }
+  .slide-group {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .slide {
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+  .slide:first-child {
+    display: block;
+    opacity: 1;
+  }
+
+  .slide-btn {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    background-color: #fff;
+    opacity: .1;
+    cursor: pointer;
+  }
+  .slide-btn:hover {
+    opacity: .3;
+  }
+  .slide-btn.slide-btn-prev {
+    left: 5px; top: 50%;
+    margin-top: -15px;
+  }
+  .slide-btn.slide-btn-next {
+    right: 5px; top: 50%;
+    margin-top: -15px;
+  }
+
+  .slide-bulletins {
+    position: absolute;
+    bottom: 5px;
+    width: 100%;
+    height: 16px;
+    text-align: center;
+  }
+  .slide-bulletin {
+    padding: 0 5px;
+    border: none;
+    background: none;
+    font-size: 32px;
+    line-height: .5;
+    color: #fff;
+    cursor: pointer;
+  }
+  .slide-bulletin.active,
+  .slide-bulletin:hover {
+    color: darkslateblue;
+  }
+  </style>
+</head>
+<body>
+<div class="slider">
+  <div class="slide-viewer">
+    <ul class="slide-group">
+      <li class="slide">
+        <a href="#"><img src="img/thom2.jpg" alt="Thom Yorke"></a>
+      </li>
+      <li class="slide">
+        <a href="#"><img src="img/colin2.jpg" alt="Colin Greenwood"></a>
+      </li>
+      <li class="slide">
+        <a href="#"><img src="img/jonny.jpg" alt="Jonny Greenwood"></a>
+      </li>
+      <li class="slide">
+        <a href="#"><img src="img/ed2.jpg" alt="Ed O'Brien'"></a>
+      </li>
+      <li class="slide">
+        <a href="#"><img src="img/philip2.jpg" alt="Philip Selway"></a>
+      </li>
+    </ul>
+  </div>
+  <div class="slide-btn slide-btn-prev">&lt;</div>
+  <div class="slide-btn slide-btn-next">&gt;</div>
+  <div class="slide-bulletins"></div>
+</div>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+  
+  var currentIndex = 0;
+  var timer;
+  var $slider = $('.slider');
+  var $slides = $slider.find('.slide');
+  var $prevBtn = $slider.find('.slide-btn-prev');
+  var $nextBtn = $slider.find('.slide-btn-next');
+
+  function move(newIndex) {
+
+    autoMove();
+
+    if ($slides.eq(newIndex).is(':animated') || newIndex == currentIndex) return;
+
+    $slider.find('.slide-bulletin').eq(currentIndex).removeClass('active');
+    $slider.find('.slide-bulletin').eq(newIndex).addClass('active');
+
+    $slides.eq(currentIndex).animate({
+      'opacity': '0'
+    }, function() {
+      $slides.eq(currentIndex).css({
+        'display': 'none'
+      });
+    });    
+    $slides.eq(newIndex).css('display', 'block');
+    $slides.eq(newIndex).animate({
+      'opacity': '1'
+    }, function() {
+      currentIndex = newIndex;
+    });
+    
+  }
+
+  function autoMove() {
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+      if (currentIndex < $slides.length - 1) {
+        move(currentIndex + 1);
+      } else {
+        move(0);
+      }
+    }, 3000);
+  }
+
+  $.each($slides, function(index) {
+    $btn = $('<button class="slide-bulletin">&bull;</button>');
+    $btn.appendTo($('.slide-bulletins'));
+    $btn.on('click', function() {
+      move(index);
+    });
+    if (index == currentIndex) {
+      $btn.addClass('active');
+    }
+  });
+
+  $prevBtn.on('click', function() {
+    if (currentIndex == 0) {
+      move($slides.length - 1);
+    } else {
+      move(currentIndex - 1);
+    }
+  });
+  $nextBtn.on('click', function() {
+    if (currentIndex == $slides.length - 1) {
+      move(0);
+    } else {
+      move(currentIndex + 1);
+    }
+  });
+
+  autoMove();
+
+</script>
+</body>
+</html>
