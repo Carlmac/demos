@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Barrel</title>
+  <style>
+  * {
+    padding: 0;
+    margin: 0;
+  }
+  .clear-fix:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+  .container {
+    width: 960px;
+    margin: 0 auto;
+  }
+  .container .img-row {
+    margin-bottom: 10px;
+  }
+  .img-row .img-wrap {
+    float: left;
+  }
+  </style>
+</head>
+
+<body>
+
+<div class="container"></div>
+
+<script src="https://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+
+var $cont = $('.container');              // 获取木桶布局容器
+var contWidth = $cont.width();            // 容器宽度
+
+var currentRowCache = [];                 // 存放当前行需要渲染的图片
+var baseRowHeight = 100;                  // 基础行高，每行实际高度会按这个数值向上缩放
+
+function createImgBarrel() {              // 初始木桶布局函数
+  var urls = getImgUrls(50);              // 获取图片URL
+  for (var i = 0; i < urls.length; i++) {
+    $img = $('<img src="' + urls[i] + '">');
+    $img.on('load', function() {
+      var $this = $(this);
+      var imgProp = {
+        $node: $this,
+        width: this.width / this.height * baseRowHeight,    // 以基础行高为行高，按自身比例缩放
+        height: baseRowHeight
+      }
+      prepareImgRow(imgProp);                               // 将数据传给准备每行图片数据的函数
+    });
+  }
+}
+
+function prepareImgRow(imgProp) {                           // 准备每行图片数据的函数
+  var rowWidth = 0;
+  currentRowCache.push(imgProp);
+  for (var i = 0; i < currentRowCache.length; i++) {
+    rowWidth += currentRowCache[i].width;
+  }
+  if (rowWidth > contWidth) {                               // 要渲染的图片宽度大于容器时
+    currentRowCache.pop();                                  // 更新缓存
+    rowWidth = rowWidth - imgProp.width;                    // 去掉使宽度过大的最后那张图片
+    var rowHeight = contWidth * baseRowHeight / rowWidth;   // 计算实际行高
+    renderImgRow(rowHeight);                                // 现在缓存中剩下的是需要渲染的图片，调用渲染函数
+    currentRowCache = [];                                   // 清空缓存
+    currentRowCache.push(imgProp);                          // 刚刚去掉的那张图片留作下一行首先渲染
+  }
+}
+
+function renderImgRow(height) {                                 // 渲染图片行的函数
+  var $rowWrap = $('<div class="img-row clear-fix"></div>');
+  for (var i = 0; i < currentRowCache.length; i++) {
+    $img = currentRowCache[i].$node;
+    var $imgWrap = $('<div class="img-wrap"></div>');
+    $imgWrap.append($img);
+    $imgWrap.appendTo($rowWrap);
+    $img.height(height);                                        // 将图片高度设置为实际行高
+  }
+  $rowWrap.appendTo($cont);
+}
+
+function getImgUrls(length) {
+  var result = [];
+  for (var i = 0; i < length; i++) {
+    var baseUrl = 'http://placehold.it/';
+    var width = Math.floor(Math.random() * 301 + 100);      // [100, 400]
+    var height = Math.floor(Math.random() * 51 + 100);      // [100, 150]
+    var color = Math.random().toString(16).substring(2, 8);
+    var url = baseUrl + width + 'x' + height + '/' + color + '/fff';
+    result.push(url);
+  }
+  return result;
+}
+
+createImgBarrel();
+
+</script>
+</body>
+
+</html>

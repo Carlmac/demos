@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>waterfall-news</title>
+  <style>
+  * {
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    list-style: none;
+  }
+  a:link,
+  a:visited,
+  a:hover,
+  a:active {
+    color: inherit;
+  }
+  .container {
+    position: relative;
+    max-width: 960px;
+    margin: 10px auto;
+  }
+  .news {
+    position: absolute;
+    box-sizing: border-box;
+    width: 300px;
+    padding: 10px;
+    margin-top: 10px;
+    margin-right: 20px;
+    border: 1px solid slateblue;
+    border-radius: 5px;
+    transition: left ease-in-out .3s, top ease-in-out .3s;
+  }
+  .news > header {
+    margin-bottom: 10px;
+  }
+  .news > header img {
+    width: 100%;
+  }
+  .news a {
+    text-decoration: none;
+  }
+  .news a:hover {
+    text-decoration: underline;
+  }
+  .load-notice {
+    position: absolute;
+    bottom: 0;
+    width: 960px;
+    margin: 0 auto;
+    line-height: 2;
+    text-align: center;
+  }
+  .news.hidden {
+    display: none;
+  }
+  .load-notice {
+    visibility: hidden;
+  }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <ul class="news-wrap">
+    <!--<li class="news">
+      <header>
+        <a href="http://slide.tech.sina.com.cn/d/slide_5_453_75489.html/d/2"><img src="http://n.sinaimg.cn/tech/transform/20170312/MhQG-fychttf9222587.jpg"></a>
+      </header>
+      <h3><a href="http://slide.tech.sina.com.cn/d/slide_5_453_75489.html/d/2">勇气可嘉！巴哈马潜水者海底解救被束白鲨</a></h3>
+      <p>水者在巴哈马的猫岛潜水时发现了一只受伤的白鲨，其颈部被绳子勒得皮开肉绽，于是3个人勇敢地潜入水底释放了这只被束缚的大家伙。</p>
+    </li>-->
+    <li class="news hidden"></li>
+  </ul>
+  <p class="load-notice">下滑显示更多</p>
+</div>
+
+
+<script src="https://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+
+var start = 1;                      // 新闻起始索引位置
+var newsPerRequest = 6;             // 每次请求新闻条数
+var isLoading = false;              // 记录是否还在上一次请求中
+var $newsUl = $('.news-wrap');      // 获取新闻容器
+var $notice = $('.load-notice');    // 获取提醒文本元素
+var timer;
+
+function isVisible($node) {
+  var nodeOffsetTop = $node.offset().top;
+  var nodeHeight = $node.outerHeight();
+  var windowScrollTop = $(window).scrollTop();
+  var windowHeight = $(window).height();
+  
+  if (nodeOffsetTop - windowHeight < windowScrollTop && windowScrollTop < nodeOffsetTop + nodeHeight) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function watchNews() {                       // 检测是否需要获取更多新闻的函数
+  if (isVisible($notice) && !isLoading) {
+    getNews(
+      function(newsArr) {                    // 这个匿名函数为 jsonp 的回调函数
+        for (var i = 0; i < newsArr.length; i++) {
+          var curNewsObj = {
+            link: newsArr[i].url,
+            img: newsArr[i].img_url,
+            title: newsArr[i].name,
+            brif: newsArr[i].short_intro
+          };
+          var $news = createNewsNode(curNewsObj);
+          (function($node) {
+            $node.find('img').on('load', function() {
+              $node.appendTo($newsUl);
+              renderWaterfall($node);
+            });
+          })($news);
+        }
+      }
+    );
+  }
+}
+
+function getNews(callback) {          // 获取新闻的函数
+  isLoading = true;
+  $.ajax({
+    url: 'http://platform.sina.com.cn/slide/album_tech',
+    data: {
+      app_key: '1271687855',
+      num: newsPerRequest,
+      page: start
+    },
+    dataType: 'jsonp',
+    jsonp: 'jsoncallback'
+  }).done(function(res) {
+    if (res && res.status.code == 0) {
+      callback(res.data);             // 获取成功后调用回调函数
+      start++;
+      isLoading = false;
+      watchNews();
+    } else {
+      console.log('请求内容错误');
+      return;
+    }
+  }).fail(function() {
+    console.log('请求失败');
+    return;
+  });
+};
+
+function createNewsNode(newsObj) {
+  var htmlStr = [
+    '<li class="news"><header><a href="',
+    newsObj.link,
+    '"><img src="',
+    newsObj.img,
+    '"></a></header><h3><a href="',
+    newsObj.link,
+    '">',
+    newsObj.title,
+    '</a></h3><p>',
+    newsObj.brif,
+    '</p></li>'
+  ].join('');
+  var $news = $(htmlStr);
+  return $news;
+}
+
+var colLength = Math.floor($newsUl.width() / $('.news.hidden').outerWidth(true));
+var colHeightArr = [];
+for (var i = 0; i < colLength; i++) {
+  colHeightArr[i] = 0;
+}
+
+function renderWaterfall($node) {
+  var minHeight = Math.min.apply(null, colHeightArr);
+  var minHeightIndex = colHeightArr.indexOf(minHeight);
+  $node.css({
+    top: minHeight + 'px',
+    left: $node.outerWidth(true) * minHeightIndex + 'px'
+  });
+  colHeightArr[minHeightIndex] += $node.outerHeight(true);
+  $newsUl.height(Math.max.apply(null, colHeightArr));       // 手动撑开为 0 的父容器高度
+}
+
+$(window).scroll(function() {   // 每次滚动都会调用检测新闻函数
+  if (timer) {
+    clearTimeout(timer);
+  }
+  setTimeout(function() {
+    watchNews();
+  }, 100);
+});
+
+// $(window).resize(function() {
+//   renderWaterfall($('.news'));
+// });
+
+watchNews();
+
+</script>
+</body>
+</html>
