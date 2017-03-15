@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Tab</title>
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  li {
+    list-style: none;
+  }
+  .tab-demo {
+    width: 500px;
+    margin: 200px auto;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+  }
+  .tabs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border-bottom: 1px solid #aaa;
+    text-align: center;
+  }
+  .tab {
+    flex-grow: 1;
+    border-right: 1px solid #aaa;
+    line-height: 2.5;
+    cursor: pointer;
+  }
+  .tab:last-child {
+    border-right: none;
+  }
+  .tab.active {
+    background-color: #ccc;
+  }
+  .tab:hover {
+    background-color: #ddd;
+  }
+  .tab-panel {
+    display: none;
+    min-height: 100px;
+  }
+  .tab-panel.active {
+    display: block;
+  }
+  </style>
+</head>
+<body>
+  <div class="tab-demo">
+    <ul class="tabs">
+      <li class="tab active">tab 1</li>
+      <li class="tab">tab 2</li>
+      <li class="tab">tab 3</li>
+    </ul>
+    <div class="tab-body">
+      <div class="tab-panel active">content 1</div>
+      <div class="tab-panel">content 2</div>
+      <div class="tab-panel">content 3</div>
+    </div>
+  </div>
+<script>
+
+var Tab = (function() {
+
+  function _Tab(container) {
+    this.tabs = container.querySelectorAll('.tab');
+    this.tabPanels = container.querySelectorAll('.tab-panel');
+    this.currentIndex = 0;
+    this.bind();
+  }
+  _Tab.prototype.showPanel = function (index) {
+    if (index === this.currentIndex) {
+      return;
+    }
+    this.tabs[this.currentIndex].classList.remove('active');
+    this.tabPanels[this.currentIndex].classList.remove('active');
+    this.tabs[index].classList.add('active');
+    this.tabPanels[index].classList.add('active');
+    this.currentIndex = index;
+  }
+  _Tab.prototype.bind = function () {
+    var _this = this;
+    for (var i = 0; i < this.tabs.length; i++) {
+      this.tabs[i].addEventListener('click', function() {
+        var index = [].indexOf.call(_this.tabs, this);
+        _this.showPanel(index);
+        _this.currentIndex = index;
+      }, false);
+    }
+  }
+
+  return {
+    init: function(container) {
+      new _Tab(container);
+    }
+  }
+
+})();
+
+
+Tab.init(document.querySelectorAll('.tab-demo')[0]);
+
+</script>
+</body>
+</html>

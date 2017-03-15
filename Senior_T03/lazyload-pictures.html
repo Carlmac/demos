@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Lazyload Pictures</title>
+  <style>
+  .container {
+    width: 620px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  img {
+    margin-bottom: 20px;
+  }
+  </style>
+</head>
+<body>
+  <div id="lazy-pic" class="container">
+    <img src="img/loading.gif" data-src="img/colin.jpg">
+    <img src="img/loading.gif" data-src="img/colin2.jpg">
+    <img src="img/loading.gif" data-src="img/ed.jpg">
+    <img src="img/loading.gif" data-src="img/ed2.jpg">
+    <img src="img/loading.gif" data-src="img/jonny.jpg">
+    <img src="img/loading.gif" data-src="img/jonny2.jpg">
+    <img src="img/loading.gif" data-src="img/philip.jpg">
+    <img src="img/loading.gif" data-src="img/philip2.jpg">
+    <img src="img/loading.gif" data-src="img/thom.jpg">
+    <img src="img/loading.gif" data-src="img/thom2.jpg">
+    <img src="img/loading.gif" data-src="img/amnesiac.jpg">
+    <img src="img/loading.gif" data-src="img/kid_a.jpg">
+    <img src="img/loading.gif" data-src="img/ok_computer.jpg">
+    <img src="img/loading.gif" data-src="img/the_bends.jpg">
+  </div>
+<script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+<script>
+
+var LazyPic = (function() {
+
+  function _LazyPic(container) {
+    this.shownSrcList = [];
+    this.$imgs = container.find('img');
+    this.renderVisibleImgs();
+
+    var _this = this;
+    $(window).scroll(function() {
+      _this.renderVisibleImgs();
+    });
+    
+  }
+  _LazyPic.prototype.isShown = function(src) {
+    return this.shownSrcList.indexOf(src) > -1;
+  }
+  _LazyPic.prototype.isVisible = function($node) {
+    var nodeOffsetTop = $node.offset().top;
+    var nodeHeight = $node.outerHeight();
+    var windowScrollTop = $(window).scrollTop();
+    var windowHeight = $(window).height();
+    
+    if (nodeOffsetTop - windowHeight < windowScrollTop && windowScrollTop < nodeOffsetTop + nodeHeight) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  _LazyPic.prototype.renderVisibleImgs = function() {
+    var _this = this;
+    this.$imgs.each(function() {
+      var $this = $(this);
+      if (_this.isVisible($this) && !_this.isShown($this.data('src'))) {
+        var src = $this.data('src');
+        $this.attr('src', src);
+        _this.shownSrcList.push(src);
+      }
+    });
+  }
+
+  return {
+    init: function(container) {
+      new _LazyPic(container);
+    }
+  }
+
+})();
+
+LazyPic.init($('#lazy-pic'));
+
+
+
+</script>
+</body>
+</html>

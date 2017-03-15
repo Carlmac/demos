@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Modal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .container {
+      position: relative;
+      width: 600px;
+      margin: 0 auto;
+    }
+    
+    .modal-shadow {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, .3);
+    }
+    .modal-shadow.active {
+      display: block;
+    }
+    
+    .modal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 999;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      background-color: white;
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    
+    .m-header {
+      position: relative;
+      padding: 10px 15px;
+      background-color: #009688;
+      color: white;
+    }
+    
+    .m-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+    
+    .m-body {
+      padding: 20px 15px;
+    }
+    
+    .m-text {
+      line-height: 2;
+    }
+    
+    .m-footer {
+      padding: 10px 15px;
+      background-color: #009688;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <button class="btn-show">显示模态框</button>
+    <div id="modal-container">
+      <div class="modal-shadow">
+        <div class="modal">
+          <header class="m-header">
+            <h3>头部</h3>
+            <div class="m-close">X</div>
+          </header>
+          <div class="m-body">
+            <p class="m-text">这是内容</p>
+            <p class="m-text">这是内容</p>
+          </div>
+          <footer class="m-footer">
+            <p>尾部</p>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+
+var Modal = (function() {
+
+  function _Modal(container, btn) {
+    this.ct = container;
+    this.modalShadow = this.ct.querySelector('.modal-shadow');
+    this.modal = this.ct.querySelector('.modal');
+    this.modalCloser = this.modal.querySelector('.m-close');
+    this.btn = btn;
+    this.bind();
+  }
+  _Modal.prototype.closeHandler = function(e) {
+    e.stopPropagation();
+    this.modalShadow.classList.remove('active');
+  }
+  _Modal.prototype.bind = function() {
+    var _this = this;
+    this.btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      _this.modalShadow.classList.add('active');
+    }, false);
+
+    this.modal.addEventListener('click', function(e) {
+      e.stopPropagation();
+    }, false);
+
+    this.modalCloser.addEventListener('click', _this.closeHandler.bind(this), false);
+    this.modalShadow.addEventListener('click', _this.closeHandler.bind(this), false);
+  }
+
+  return {
+    init: function(container, btn) {
+      new _Modal(container, btn);
+    }
+  }
+
+})();
+
+Modal.init(document.querySelector('#modal-container'), document.querySelector('.btn-show'));
+
+</script>
+</body>
+
+</html>
