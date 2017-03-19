@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Loading Animation</title>
+  <style>
+    .clear-fix:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+    .container {
+      width: 960px;
+      margin: 0 auto;
+    }
+  .loading {
+    padding-top: 50px;
+    margin-bottom: 30px;
+  }
+  .loading-stripes .wrap {
+    width: 40px;
+    margin: 0 auto;
+  }
+  .loading-stripes .stripe {
+    float: left;
+    width: 8px;
+    height: 40px;
+    margin-right: 5px;
+    background-color: slateblue;
+  }
+  @keyframes stretch {
+    0% {
+      transform: scaleY(1);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+    75% {
+      transform: scaleY(1.5);
+    }
+    100% {
+      transform: scaleY(1);
+    }
+  }
+  .loading-stripes .stripe {
+    animation: stretch 1s ease-out infinite;
+  }
+  .loading-stripes .stripe:nth-child(2) {
+    animation: stretch 1s ease-out .25s infinite;
+  }
+  .loading-stripes .stripe:nth-child(3) {
+    animation: stretch 1s ease-out .5s infinite;
+  }
+
+  .loading-spiner {
+    overflow: hidden;
+  }
+  .loading-spiner .spiner {
+    margin: 0 auto;
+    width: 70px;
+    height: 70px;
+    border: 20px solid rgba(106, 90, 205,.5);
+    border-top-color: rgba(106, 90, 205,.8);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  </style>
+</head>
+<body>
+  <div class="loading loading-stripes">
+    <div class="container clear-fix">
+      <div class="wrap">
+        <div class="stripe"></div>
+        <div class="stripe"></div>
+        <div class="stripe"></div>
+      </div>
+    </div>
+  </div>
+<div class="loading loading-spiner">
+  <div class="container">
+    <div class="spiner"></div>
+  </div>
+</div>
+</body>
+</html>
