@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>EventCenter</title>
+</head>
+<body>
+
+<input id="textIntput" type="text"><br>
+<button id="btn">unsubscribe</button>
+<p id="result"></p>
+
+<script src="EventCenter.js"></script>
+<script>
+
+  var textInput = document.querySelector('#textIntput');
+  var btn = document.querySelector('#btn');
+  var result = document.querySelector('#result');
+
+  var Event = new EventCenter();
+
+  Event.on('change', function(val) {
+    result.innerText = 'change... now value is ' + val;
+  });
+
+  textInput.addEventListener('keyup', function() {
+    Event.fire('change', textInput.value);
+  });
+
+  btn.addEventListener('click', function() {
+    Event.off('change');
+  });
+
+</script>
+</body>
+</html>
